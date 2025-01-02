@@ -1,0 +1,109 @@
+CREATE DATABASE Hotelsa3ada;
+USE Hotelsa3ada;
+GO
+
+-- Table Client
+CREATE TABLE Client (
+    idClient INT PRIMARY KEY IDENTITY(1,1),
+    nom NVARCHAR(100) NOT NULL,
+    prenom NVARCHAR(100) NOT NULL,
+    contact NVARCHAR(15) NOT NULL
+);
+
+-- Table Chambre
+CREATE TABLE Chambre (
+    numero INT PRIMARY KEY IDENTITY(1,1),
+    type NVARCHAR(50) NOT NULL,
+    prix FLOAT NOT NULL,
+    disponible BIT NOT NULL
+);
+
+-- Table Reservation
+CREATE TABLE Reservation (
+    idReservation INT PRIMARY KEY IDENTITY(1,1),
+    dateDebut DATE NOT NULL,
+    dateFin DATE NOT NULL,
+    idChambre INT NOT NULL,
+    idClient INT NOT NULL,
+    statut NVARCHAR(50) NOT NULL,
+    FOREIGN KEY (idChambre) REFERENCES Chambre(numero),
+    FOREIGN KEY (idClient) REFERENCES Client(idClient)
+);
+
+-- Table Paiement
+CREATE TABLE Paiement (
+    idPaiement INT PRIMARY KEY IDENTITY(1,1),
+    montant FLOAT NOT NULL,
+    datePaiement DATE NOT NULL,
+    modePaiement NVARCHAR(50) NOT NULL,
+    idReservation INT NOT NULL,
+    FOREIGN KEY (idReservation) REFERENCES Reservation(idReservation)
+);
+
+-- Table Utilisateur
+CREATE TABLE Utilisateur (
+    idUtilisateur INT PRIMARY KEY IDENTITY(1,1),
+    nom NVARCHAR(100) NOT NULL,
+    role NVARCHAR(50) NOT NULL
+);
+
+-- Table Rapport
+CREATE TABLE Rapport (
+    idRapport INT PRIMARY KEY IDENTITY(1,1),
+    dateGeneration DATE NOT NULL,
+    contenu NVARCHAR(MAX) NOT NULL,
+    idUtilisateur INT NOT NULL,
+    FOREIGN KEY (idUtilisateur) REFERENCES Utilisateur(idUtilisateur)
+);
+
+-- Table Fidélité
+CREATE TABLE Fidelite (
+    idFidelite INT PRIMARY KEY IDENTITY(1,1),
+    points INT NOT NULL,
+    niveau NVARCHAR(50) NOT NULL,
+    idClient INT NOT NULL,
+    FOREIGN KEY (idClient) REFERENCES Client(idClient)
+);
+
+-- Insertion de données exemple
+-- Clients
+INSERT INTO Client (nom, prenom, contact) 
+VALUES 
+('El Mansouri', 'Youssef', '+212612345678'),
+('Alaoui', 'Fatima', '+212613456789');
+
+-- Chambres
+INSERT INTO Chambre (type, prix, disponible) 
+VALUES 
+('Simple', 300.00, 1),
+('Double', 500.00, 1),
+('Suite', 1200.00, 0);
+
+-- Réservations
+INSERT INTO Reservation (dateDebut, dateFin, idChambre, idClient, statut) 
+VALUES 
+('2025-01-05', '2025-01-10', 1, 1, 'Confirmée'),
+('2025-01-15', '2025-01-20', 2, 2, 'En attente');
+
+-- Paiements
+INSERT INTO Paiement (montant, datePaiement, modePaiement, idReservation) 
+VALUES 
+(1500.00, '2025-01-06', 'Carte Bancaire', 1),
+(500.00, '2025-01-16', 'Espèces', 2);
+
+-- Utilisateurs
+INSERT INTO Utilisateur (nom, role) 
+VALUES 
+('Admin', 'Administrateur'),
+('Youssef', 'Manager');
+
+-- Rapports
+INSERT INTO Rapport (dateGeneration, contenu, idUtilisateur) 
+VALUES 
+('2025-01-02', 'Rapport mensuel des réservations', 1);
+
+-- Fidélité
+INSERT INTO Fidelite (points, niveau, idClient) 
+VALUES 
+(200, 'Bronze', 1),
+(500, 'Argent', 2);
